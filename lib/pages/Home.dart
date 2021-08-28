@@ -55,14 +55,13 @@ class _HomeState extends State<Home> {
               _makeTitleBar(mSize, "Categories"),
               SizedBox(height: 10),
               GridView.builder(
-                  itemCount: 20,
                   shrinkWrap: true,
+                  itemCount: 20,
+                  physics: ScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.5,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10),
-                  itemBuilder: (context, index) => _buildCategory(index)),
+                      crossAxisCount: 2),
+                  itemBuilder: (context, index) =>
+                      _buildCategory(index))
             ],
           ),
         ));
