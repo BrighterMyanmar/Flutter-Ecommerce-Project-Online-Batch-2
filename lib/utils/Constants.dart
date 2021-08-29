@@ -8,4 +8,9 @@ class Constants{
   static const Color yellow = Color(0xffFDC054);
   static const Color darkGrey = Color(0xff202020);
   static const Color transparentYellow = Color.fromRGBO(253, 184, 70, 0.7);
+
+  static String sarTar = """
+  Finally, we have PageTransformer like android, just set a transformer to Swiper, it returns a widget that has been transformed. For now, only support for layout DEFAULT. Thanks to @FlutterRocks ,you've done great job
+  """;
+
 }
