@@ -14,38 +14,14 @@ class Preview extends StatefulWidget {
 
 class _PreviewState extends State<Preview> {
   var cartCount = 0;
+
   @override
   Widget build(BuildContext context) {
     var msize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           title: Text("Product Preview"),
-          actions: [
-            Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 20, 0),
-                  child: SvgPicture.asset(
-                    "assets/icons/cart.svg",
-                    color: Constants.accent,
-                    width: 40,
-                  ),
-                ),
-                Positioned(
-                  right: 12,
-                  child: Container(
-                    width:25,
-                    height:25,
-                    decoration: BoxDecoration(
-                      color: Constants.normal,
-                      borderRadius: BorderRadius.all(Radius.circular(25))
-                    ),
-                    child: Center(child: Text("$cartCount")),
-                  ),
-                )
-              ],
-            )
-          ],
+          actions: [Constants.getShoppingCart()],
         ),
         body: SingleChildScrollView(
           child: Stack(

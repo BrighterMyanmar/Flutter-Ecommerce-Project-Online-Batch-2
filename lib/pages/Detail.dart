@@ -51,32 +51,7 @@ class _DetailState extends State<Detail> {
                         fontFamily: "English")),
                 InkWell(
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> Cart())),
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 20, 0),
-                        child: SvgPicture.asset(
-                          "assets/icons/cart.svg",
-                          color: Constants.accent,
-                          width: 40,
-                        ),
-                      ),
-                      Positioned(
-                        right: 12,
-                        child: Container(
-                          width: 25,
-                          height: 25,
-                          decoration: BoxDecoration(
-                              color: Constants.normal,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25))),
-                          child: Center(
-                              child: Text("11",
-                                  style: TextStyle(color: Colors.white))),
-                        ),
-                      )
-                    ],
-                  ),
+                  child:Constants.getShoppingCart(),
                 )
               ],
             ),
