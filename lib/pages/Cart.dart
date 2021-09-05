@@ -1,4 +1,5 @@
 import 'package:commerce/utils/Constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Cart extends StatefulWidget {
@@ -55,11 +56,12 @@ class _CartState extends State<Cart> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         RaisedButton(
-                            onPressed: () {},
+                            onPressed: () =>
+                                Navigator.pushNamed(context, "/login"),
                             color: Constants.normal,
                             shape: RoundedRectangleBorder(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
+                                    BorderRadius.all(Radius.circular(20))),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 15),
@@ -81,53 +83,94 @@ class _CartState extends State<Cart> {
   }
 
   Widget _buildCartItem() {
-    return Card(
-      child: Stack(children: [
-        Container(
-            height: 100,
-            decoration: BoxDecoration(color: Constants.primary),
-            child: Row(children: [
-              Image.asset("assets/images/bur.png"),
-              Column(children: [
-                Text("Burger with Beef"),
-                Row(children: [
-                  RichText(text: TextSpan(
-                      style: TextStyle(
-                          color: Constants.normal,
-                        fontFamily: "English",
-                        fontSize: 16
-                      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      child: Card(
+        // color: Colors.white,
+        child: Stack(
+          overflow: Overflow.visible,
+          children: [
+            Positioned(
+              right: -10,
+              top: -10,
+              child: Container(
+                height: 25,
+                width: 25,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle, color: Constants.secondary),
+                child: Icon(Icons.clear, color: Colors.white),
+              ),
+            ),
+            Container(
+                height: 100,
+                margin: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.all(5),
+                // decoration: BoxDecoration(color: Constants.primary),
+                child: Row(
+                  children: [
+                    Image.asset("assets/images/bur.png"),
+                    SizedBox(width: 10),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextSpan(text: "Price 3500 Ks\n"),
-                        TextSpan(text: "Total 10500 Ks")
-                      ]
-                  )),
-                  Row(children: [
-                    Container(
-                      width:30,
-                      height:30,
-                      decoration: BoxDecoration(
-                        color: Constants.normal,
-                        shape: BoxShape.circle
-                      ),
-                      child: Icon(Icons.remove,color:Constants.primary),
-                    ),
-                    Text("03"),
-                    Container(
-                      width:30,
-                      height:30,
-                      decoration: BoxDecoration(
-                          color: Constants.normal,
-                          shape: BoxShape.circle
-                      ),
-                      child: Icon(Icons.add,color:Constants.primary),
+                        Text("Burger with Beef",
+                            style: TextStyle(
+                                color: Constants.normal,
+                                fontFamily: "English",
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold)),
+                        SizedBox(height: 15),
+                        Row(
+                          children: [
+                            SizedBox(width: 10),
+                            RichText(
+                                text: TextSpan(
+                                    style: TextStyle(
+                                        color: Constants.normal,
+                                        fontFamily: "English",
+                                        fontSize: 14,
+                                        fontStyle: FontStyle.italic),
+                                    children: [
+                                  TextSpan(text: "Price 3500\n"),
+                                  TextSpan(text: "Total 10500")
+                                ])),
+                            SizedBox(width: 20),
+                            Row(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      color: Constants.normal,
+                                      shape: BoxShape.circle),
+                                  child: Icon(Icons.remove,
+                                      color: Constants.primary),
+                                ),
+                                SizedBox(width: 5),
+                                Text("03",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Constants.normal)),
+                                SizedBox(width: 5),
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      color: Constants.normal,
+                                      shape: BoxShape.circle),
+                                  child:
+                                      Icon(Icons.add, color: Constants.primary),
+                                )
+                              ],
+                            )
+                          ],
+                        )
+                      ],
                     )
-                  ],)
-                ],)
-              ],)
-            ],)
-        )
-      ],),
+                  ],
+                ))
+          ],
+        ),
+      ),
     );
   }
 }
