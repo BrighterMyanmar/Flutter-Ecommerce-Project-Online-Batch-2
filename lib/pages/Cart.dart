@@ -1,3 +1,4 @@
+import 'package:commerce/pages/HistoryPage.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +57,17 @@ class _CartState extends State<Cart> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         RaisedButton(
-                            onPressed: () =>
-                                Navigator.pushNamed(context, "/login"),
+                            onPressed: () {
+                              if (Constants.user == null) {
+                                print("No User");
+                                Navigator.pushNamed(context, "/login");
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HistoryPage()));
+                              }
+                            },
                             color: Constants.normal,
                             shape: RoundedRectangleBorder(
                                 borderRadius:

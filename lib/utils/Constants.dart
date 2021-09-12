@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:commerce/models/User.dart';
 
 class Constants{
   static const Color primary = Color(0xFFF6F6F6);
@@ -8,6 +10,11 @@ class Constants{
   static const Color yellow = Color(0xffFDC054);
   static const Color darkGrey = Color(0xff202020);
   static const Color transparentYellow = Color.fromRGBO(253, 184, 70, 0.7);
+  static const String BASE_URL = "http://13.214.51.219:3000";
+
+  static Map<String,String> headers = {"content-type":"application/json"};
+
+  static User? user;
 
   static String sarTar = """
   Finally, we have PageTransformer like android, just set a transformer to Swiper, it returns a widget that has been transformed. For now, only support for layout DEFAULT. Thanks to @FlutterRocks ,you've done great job

@@ -53,22 +53,25 @@ class _ProductState extends State<Product> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           setState(() {
             currentIndex = index;
           });
         },
         child: Column(children: [
-          Text(tag,style:TextStyle(fontSize: 20,
-              color: Constants.normal,
-              fontWeight: FontWeight.bold)),
-          SizedBox(height:4),
+          Text(tag,
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Constants.normal,
+                  fontWeight: FontWeight.bold)),
+          SizedBox(height: 4),
           Container(
-            height:3,
-            width:60,
+            height: 3,
+            width: 60,
             decoration: BoxDecoration(
-              color: index == currentIndex ?  Constants.accent : Colors.transparent
-            ),
+                color: index == currentIndex
+                    ? Constants.accent
+                    : Colors.transparent),
           )
         ]),
       ),
@@ -92,7 +95,10 @@ class _ProductState extends State<Product> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon(Icons.shopping_cart, color: Constants.accent, size: 30),
+                InkWell(
+                    onTap: () {},
+                    child: Icon(Icons.shopping_cart,
+                        color: Constants.accent, size: 30)),
                 Text("3500 Ks",
                     style: TextStyle(
                         fontFamily: "English",
@@ -100,10 +106,11 @@ class _ProductState extends State<Product> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold)),
                 InkWell(
-                    onTap: (){
-                        Navigator.pushNamed(context, "/preview");
+                    onTap: () {
+                      Navigator.pushNamed(context, "/preview");
                     },
-                    child: Icon(Icons.remove_red_eye, color: Constants.accent, size: 30))
+                    child: Icon(Icons.remove_red_eye,
+                        color: Constants.accent, size: 30))
               ],
             )
           ],

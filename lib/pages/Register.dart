@@ -1,25 +1,26 @@
 import 'package:commerce/helper/TrianglePainter.dart';
-import 'package:commerce/pages/Register.dart';
 import 'package:commerce/utils/Api.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Register extends StatefulWidget {
+  const Register({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
-  var _phoneController = TextEditingController(text:"08300300300");
-  var _passwordController = TextEditingController(text:"123123123");
+class _RegisterState extends State<Register> {
+  var _phoneController = TextEditingController();
+  var _passwordController = TextEditingController();
+  var _nameController = TextEditingController();
+  var _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var msize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
+      appBar: AppBar(title: Text("Register")),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -29,22 +30,55 @@ class _LoginState extends State<Login> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 30),
+                SizedBox(height: 10),
                 Center(child: Image.asset("assets/images/fm.png")),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text("Login",
+                  child: Text("Register",
                       style: TextStyle(
-                          fontSize: 45,
+                          fontSize: 35,
                           color: Constants.normal,
                           fontFamily: "English",
                           fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                            labelText: "Name",
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Constants.normal)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Constants.normal))),
+                      ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                            labelText: "Email",
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Constants.normal)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Constants.normal))),
+                      ),
+                      SizedBox(height: 20),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: _phoneController,
@@ -87,11 +121,8 @@ class _LoginState extends State<Login> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               InkWell(
-                                onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Register())),
-                                child: Text("Not a member yet! \nRegister Here",
+                                onTap: () => Navigator.pop(context),
+                                child: Text("Already member ? \nLogin Here",
                                     style: TextStyle(
                                         fontFamily: "English",
                                         fontSize: 14,
@@ -106,11 +137,16 @@ class _LoginState extends State<Login> {
                           FlatButton(
                               color: Constants.secondary,
                               onPressed: () async {
+                                var name = _nameController.text;
+                                var email = _emailController.text;
                                 var phone = _phoneController.text;
                                 var pwrod = _passwordController.text;
-                                bool bol = await Api.login(
-                                    phone: phone, password: pwrod);
-                                if(bol){
+                                var bol = await Api.register(
+                                    name: name,
+                                    email: email,
+                                    phone: phone,
+                                    password: pwrod);
+                                if (bol) {
                                   Navigator.pop(context);
                                 }
                               },
@@ -121,7 +157,7 @@ class _LoginState extends State<Login> {
                                   children: [
                                     Icon(Icons.lock, color: Constants.primary),
                                     SizedBox(width: 10),
-                                    Text("Login",
+                                    Text("Register",
                                         style: TextStyle(
                                             color: Constants.primary,
                                             fontFamily: "English",

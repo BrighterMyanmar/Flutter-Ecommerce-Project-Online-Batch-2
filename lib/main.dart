@@ -7,9 +7,9 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      "/":(context) => Login(),
+      "/":(context) => Flash(),
       "/preview" : (context) => Preview(),
-      "/login" : (context) => Flash()
+      "/login" : (context) => Login()
     },
   ));
 }
