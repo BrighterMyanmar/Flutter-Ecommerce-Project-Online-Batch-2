@@ -1,5 +1,5 @@
 import 'package:card_swiper/card_swiper.dart';
-import 'package:commerce/pages/Product.dart';
+import 'package:commerce/pages/ProductPage.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
