@@ -1,14 +1,16 @@
+import 'package:commerce/models/Product.dart';
+import 'package:commerce/pages/Preview.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
-class Product extends StatefulWidget {
-  const Product({Key? key}) : super(key: key);
+class ProductPage extends StatefulWidget {
+  const ProductPage({Key? key}) : super(key: key);
 
   @override
-  _ProductState createState() => _ProductState();
+  _ProductPageState createState() => _ProductPageState();
 }
 
-class _ProductState extends State<Product> {
+class _ProductPageState extends State<ProductPage> {
   List<String> items = [
     "Popular",
     "Flash Sale",
@@ -25,6 +27,7 @@ class _ProductState extends State<Product> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Products"),
+          actions: [Constants.getShoppingCart()],
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -39,11 +42,12 @@ class _ProductState extends State<Product> {
               ),
               GridView.builder(
                   shrinkWrap: true,
-                  itemCount: 20,
+                  itemCount: Constants.shopProducts.length,
                   physics: ScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),
-                  itemBuilder: (context, ind) => _buildProduct())
+                  itemBuilder: (context, ind) =>
+                      _buildProduct(Constants.shopProducts[ind]))
             ],
           ),
         ));
@@ -78,28 +82,32 @@ class _ProductState extends State<Product> {
     );
   }
 
-  Widget _buildProduct() {
+  Widget _buildProduct(Product product) {
     return Container(
       child: Card(
         child: Column(
           children: [
             SizedBox(height: 5),
-            Text("Big Burger",
+            Text(product.name ?? "",
                 style: TextStyle(
                     fontFamily: "English",
                     color: Constants.normal,
                     fontSize: 30,
                     fontWeight: FontWeight.bold)),
-            Image.asset("assets/images/bur.png", width: 120),
+            Image.asset("assets/images/${product.image}", height: 100),
             SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        Constants.addToCard(product);
+                      });
+                    },
                     child: Icon(Icons.shopping_cart,
                         color: Constants.accent, size: 30)),
-                Text("3500 Ks",
+                Text("${product.price ?? 0} Ks",
                     style: TextStyle(
                         fontFamily: "English",
                         color: Constants.normal,
@@ -107,7 +115,10 @@ class _ProductState extends State<Product> {
                         fontWeight: FontWeight.bold)),
                 InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, "/preview");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Preview(product: product)));
                     },
                     child: Icon(Icons.remove_red_eye,
                         color: Constants.accent, size: 30))

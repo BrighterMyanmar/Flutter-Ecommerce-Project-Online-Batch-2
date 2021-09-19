@@ -12,59 +12,127 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _drawerKey = GlobalKey();
   var imgList = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
 
   @override
   Widget build(BuildContext context) {
     var mSize = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Home Page"),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: InkWell(
-                  onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Product())),
-                  child: Icon(Icons.home, size: 35)),
-            )
+      key: _scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Colors.pinkAccent,
+        title: Text("Home Page"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProductPage())),
+                child: Icon(Icons.home, size: 35)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+                onTap: () {
+                  _scaffoldKey.currentState
+                      ?.showSnackBar(new SnackBar(content: Text("Hello")));
+                },
+                child: Icon(Icons.person, size: 35)),
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _makeTitleBar(mSize, "Tags"),
+            SizedBox(height: 10),
+            Container(
+              height: 150,
+              child: Swiper(
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.asset(
+                    "assets/images/${imgList[index]}",
+                    fit: BoxFit.contain,
+                  );
+                },
+                itemCount: imgList.length,
+                // pagination: SwiperPagination(),
+                control: SwiperControl(),
+                autoplay: true,
+                duration: 1000,
+              ),
+            ),
+            SizedBox(height: 10),
+            _makeTitleBar(mSize, "Categories"),
+            SizedBox(height: 10),
+            GridView.builder(
+                shrinkWrap: true,
+                itemCount: 20,
+                physics: ScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemBuilder: (context, index) => _buildCategory(index))
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _makeTitleBar(mSize, "Tags"),
-              SizedBox(height: 10),
-              Container(
-                height: 150,
-                child: Swiper(
-                  itemBuilder: (BuildContext context, int index) {
-                    return Image.asset(
-                      "assets/images/${imgList[index]}",
-                      fit: BoxFit.contain,
-                    );
-                  },
-                  itemCount: imgList.length,
-                  // pagination: SwiperPagination(),
-                  control: SwiperControl(),
-                  autoplay: true,
-                  duration: 1000,
-                ),
-              ),
-              SizedBox(height: 10),
-              _makeTitleBar(mSize, "Categories"),
-              SizedBox(height: 10),
-              GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: 20,
-                  physics: ScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (context, index) =>
-                      _buildCategory(index))
-            ],
+      ),
+      drawer: _getMyDrawer(),
+    );
+  }
+
+  Widget _getMyDrawer() {
+    return Drawer(
+      key: _drawerKey,
+      child: ListView(
+        children: [
+          _buildDrawerHeader(),
+          _buildListTitleWithIcon(context, Icons.home, "Home Page", "/login"),
+          _buildListTitleWithIcon(
+              context, Icons.person, "About Page", "/register"),
+          _buildListTitleWithIcon(
+              context, Icons.location_city, "Contact Us", "/login"),
+          _buildListTitleWithIcon(
+              context, Icons.location_city, "Contact Us", "/register"),
+          _buildListTitleWithIcon(
+              context, Icons.location_city, "Contact Us", "/login"),
+          _buildListTitleWithIcon(
+              context, Icons.location_city, "Contact Us", "/register"),
+          _buildListTitleWithIcon(
+              context, Icons.location_city, "Contact Us", "/login"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListTitleWithIcon(context, icon, text, page) {
+    return ListTile(
+      title: Column(
+        children: [
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, page),
+            child: Row(
+              children: [
+                Icon(icon, color: Constants.accent),
+                SizedBox(width: 20),
+                Text(text, style: TextStyle(color: Constants.normal))
+              ],
+            ),
           ),
-        ));
+          SizedBox(height: 10),
+          Container(height: 0.5, color: Constants.normal)
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerHeader() {
+    return DrawerHeader(
+        decoration: BoxDecoration(color: Constants.normal),
+        child: Column(children: [
+          Image.asset("assets/images/fm.png", height: 100),
+          Text("စိုးသူအောင်", style: TextStyle(color: Constants.primary))
+        ]));
   }
 
   Widget _buildCategory(ind) {

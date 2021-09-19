@@ -1,4 +1,5 @@
 import 'package:commerce/helper/ArchPainter.dart';
+import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Detail.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,13 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Preview extends StatefulWidget {
-  const Preview({Key? key}) : super(key: key);
+  final Product? product;
+
+  const Preview({Key? key, this.product}) : super(key: key);
 
   @override
-  _PreviewState createState() => _PreviewState();
+  _PreviewState createState() => _PreviewState(product);
 }
 
 class _PreviewState extends State<Preview> {
+  Product? product;
+
+  _PreviewState(this.product);
+
   var cartCount = 0;
 
   @override
@@ -31,7 +38,7 @@ class _PreviewState extends State<Preview> {
                 SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text("Big Burger",
+                  child: Text(product?.name ?? "",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 45,
@@ -39,7 +46,7 @@ class _PreviewState extends State<Preview> {
                           fontFamily: "English")),
                 ),
                 SizedBox(height: 20),
-                Center(child: Image.asset("assets/images/bur.png", width: 250)),
+                Center(child: Image.asset("assets/images/${product?.image}", width: 250)),
                 SizedBox(height: 20),
                 _buildRichText("Price\n", "\t\t\t\t\t\t\t3500 Ks"),
                 SizedBox(height: 20),
