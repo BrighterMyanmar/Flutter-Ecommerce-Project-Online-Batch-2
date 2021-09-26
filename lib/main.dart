@@ -1,5 +1,6 @@
 import 'package:commerce/pages/Chat.dart';
 import 'package:commerce/pages/Flash.dart';
+import 'package:commerce/pages/HistoryPage.dart';
 import 'package:commerce/pages/Home.dart';
 import 'package:commerce/pages/Login.dart';
 import 'package:commerce/pages/Preview.dart';
@@ -10,9 +11,10 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     routes: {
-      "/": (context) => Home(),
+      "/": (context) => Flash(),
       "/login": (context) => Login(),
       "/register": (context) => Register(),
+      "/historypage": (context) => HistoryPage()
     },
   ));
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:commerce/models/User.dart';
+import 'package:commerce/models/Category.dart';
 import 'package:commerce/models/Product.dart';
 
 class Constants{
@@ -12,10 +13,12 @@ class Constants{
   static const Color darkGrey = Color(0xff202020);
   static const Color transparentYellow = Color.fromRGBO(253, 184, 70, 0.7);
   static const String BASE_URL = "http://13.214.51.219:3000";
+  static const String API_URL = "$BASE_URL/api";
 
   static Map<String,String> headers = {"content-type":"application/json"};
 
   static List<Product> cartProducts = [];
+  static List<Category> categories = [];
 
   static addToCard(product){
     bool exist = false;
@@ -67,18 +70,4 @@ class Constants{
                              ],
                            );
   }
-
-  static List<Product> shopProducts = [
-    new Product(id:"1",name:"Shoe",image:"1.jpg",price:2000),
-        new Product(id:"2",name:"Item 2",image:"2.jpg",price:3000),
-        new Product(id:"3",name:"Item 3",image:"3.jpg",price:4000),
-        new Product(id:"4",name:"Item 4",image:"4.jpg",price:5000),
-        new Product(id:"5",name:"Item 5",image:"5.jpg",price:6000),
-        new Product(id:"6",name:"Item 6",image:"bur.png",price:7000),
-        new Product(id:"7",name:"Item 7",image:"delivery.png",price:8000),
-        new Product(id:"8",name:"Item 8",image:"fm.png",price:9000),
-        new Product(id:"9",name:"Item 9",image:"warranty.png",price:10000),
-        new Product(id:"10",name:"Item 10",image:"bur.png",price:20000),
-  ];
-
 }

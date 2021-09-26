@@ -1,16 +1,38 @@
 import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Preview.dart';
+import 'package:commerce/utils/Api.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  String? cat;
+
+  ProductPage({Key? key, this.cat}) : super(key: key);
 
   @override
-  _ProductPageState createState() => _ProductPageState();
+  _ProductPageState createState() => _ProductPageState(this.cat);
 }
 
 class _ProductPageState extends State<ProductPage> {
+  String? cat;
+  List<Product> products = [];
+  int page = 1;
+  bool isLoading = false;
+
+  _ProductPageState(this.cat);
+
+  loadProduct() async {
+    setState(() {
+      isLoading = true;
+    });
+    List<Product> ps = await Api.paginateProduct(page: page);
+    setState(() {
+      products.addAll(ps);
+      page++;
+      isLoading = false;
+    });
+  }
+
   List<String> items = [
     "Popular",
     "Flash Sale",
@@ -23,34 +45,55 @@ class _ProductPageState extends State<ProductPage> {
   int currentIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    loadProduct();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("Products"),
           actions: [Constants.getShoppingCart()],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 30,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: items.length,
-                    itemBuilder: (context, index) =>
-                        _buildTitleTab(index, items[index])),
-              ),
-              GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: Constants.shopProducts.length,
-                  physics: ScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (context, ind) =>
-                      _buildProduct(Constants.shopProducts[ind]))
-            ],
-          ),
+        body: Column(
+          children: [
+            Container(
+              height: 30,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: items.length,
+                  itemBuilder: (context, index) =>
+                      _buildTitleTab(index, items[index])),
+            ),
+            Expanded(
+                child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (!isLoading &&
+                    scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
+                  loadProduct();
+                }
+                return false;
+              },
+              child: _buildProductGrid(),
+            )),
+            Container(
+              child: isLoading ? CircularProgressIndicator() : null,
+            )
+          ],
         ));
+  }
+
+  Widget _buildProductGrid() {
+    return GridView.builder(
+        shrinkWrap: true,
+        itemCount: products.length,
+        physics: ScrollPhysics(),
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (context, ind) => _buildProduct(products[ind]));
   }
 
   Widget _buildTitleTab(index, tag) {
@@ -94,7 +137,7 @@ class _ProductPageState extends State<ProductPage> {
                     color: Constants.normal,
                     fontSize: 30,
                     fontWeight: FontWeight.bold)),
-            Image.asset("assets/images/${product.image}", height: 100),
+            Image.network("https://picsum.photos/250/200", scale: 2.0),
             SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

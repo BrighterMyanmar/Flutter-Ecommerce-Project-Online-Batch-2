@@ -1,19 +1,29 @@
 import 'package:card_swiper/card_swiper.dart';
+import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Cart.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class Detail extends StatefulWidget {
-  const Detail({Key? key}) : super(key: key);
+  final Product? product;
+
+  const Detail({Key? key, this.product}) : super(key: key);
 
   @override
-  _DetailState createState() => _DetailState();
+  _DetailState createState() => _DetailState(this.product);
 }
 
 class _DetailState extends State<Detail> {
-  var imgList = ["bur.png", "bur.png", "bur.png"];
+  Product? product;
+
+  _DetailState(this.product);
+
+  var imgList = [
+    "https://picsum.photos/300/200",
+    "https://picsum.photos/300/200",
+    "https://picsum.photos/300/200"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +36,8 @@ class _DetailState extends State<Detail> {
               height: 150,
               child: Swiper(
                 itemBuilder: (BuildContext context, int index) {
-                  return Image.asset(
-                    "assets/images/${imgList[index]}",
+                  return Image.network(
+                    imgList[index],
                     fit: BoxFit.contain,
                   );
                 },
@@ -43,15 +53,16 @@ class _DetailState extends State<Detail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text("Big Burger",
+                Text(product?.name ?? "",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 45,
                         color: Constants.normal,
                         fontFamily: "English")),
                 InkWell(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> Cart())),
-                  child:Constants.getShoppingCart(),
+                  onTap: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Cart())),
+                  child: Constants.getShoppingCart(),
                 )
               ],
             ),
@@ -59,12 +70,12 @@ class _DetailState extends State<Detail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildRichText("Price\n", "\t\t\t\t3500 Ks"),
-                _buildRichText("Size\n", "\t\t\tLarge Size"),
-                _buildRichText("Promo\n", "\t\t\tCoca Cola"),
+                _buildRichText("Price\n", "\t\t\t\t${product?.price ?? 0} Ks"),
+                _buildRichText("Size\n", "\t\t\t${product?.size ?? 0}"),
+                _buildRichText("Promo\n", "\t\t\t${product?.discount ?? 0}"),
               ],
             ),
-            _makePara(Constants.sarTar),
+            _makePara(product?.desc ?? ""),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Table(
@@ -74,26 +85,30 @@ class _DetailState extends State<Detail> {
                     _buildTableTitle("Features"),
                     _buildTableTitle("Values")
                   ]),
-                  _buildTableContent("Size", "Large Size"),
-                  _buildTableContent("Price", "3500Ks"),
-                  _buildTableContent("Discount", "0Ks"),
+                  ...List.generate(product?.features?.length ?? 0, (index) {
+                    var feature = product?.features?[index];
+                    var key = feature.keys.toList()[0];
+                    return _buildTableContent(key, feature[key]);
+                  })
                 ],
               ),
             ),
-            _makePara(Constants.sarTar),
-            _buildTextAndCard("Delivery","assets/images/delivery.png"),
-            _buildTextAndCard("Warranty","assets/images/warranty.png")
+            _makePara(product?.detail ?? ""),
+            _buildTextAndCard("Delivery", "assets/images/delivery.png"),
+            _buildTextAndCard("Warranty", "assets/images/warranty.png")
           ],
         )));
   }
 
-  Widget _buildTextAndCard(text,image) {
+  Widget _buildTextAndCard(text, image) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(children: [
-        Text(text,style:TextStyle(fontSize: 25,
-            fontFamily: "English",
-            fontWeight: FontWeight.bold)),
+        Text(text,
+            style: TextStyle(
+                fontSize: 25,
+                fontFamily: "English",
+                fontWeight: FontWeight.bold)),
         SizedBox(height: 15),
         Image.asset(image)
       ]),

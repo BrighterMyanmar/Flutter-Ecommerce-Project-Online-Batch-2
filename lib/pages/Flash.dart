@@ -1,5 +1,6 @@
 import 'package:commerce/helper/TrianglePainter.dart';
 import 'package:commerce/pages/Home.dart';
+import 'package:commerce/utils/Api.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +12,11 @@ class Flash extends StatefulWidget {
 }
 
 class _FlashState extends State<Flash> {
-
-  loadInitialData() async{
-     await Future.delayed(Duration(seconds: 5));
-     Navigator.push(context,
-         MaterialPageRoute(builder: (context)=> Home()));
+  loadInitialData() async {
+    bool bol = await Api.getCategories();
+    if (bol) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    }
   }
 
   @override
@@ -44,7 +45,7 @@ class _FlashState extends State<Flash> {
                       child: Text(
                         "Food Monkey",
                         style: TextStyle(
-                          color: Constants.normal,
+                            color: Constants.normal,
                             fontSize: 45,
                             fontFamily: "English",
                             fontWeight: FontWeight.bold),
@@ -52,9 +53,9 @@ class _FlashState extends State<Flash> {
                     ),
                   ],
                 ),
-                SizedBox(height:120),
+                SizedBox(height: 120),
                 Image.asset("assets/images/fm.png"),
-                SizedBox(height:120),
+                SizedBox(height: 120),
                 CircularProgressIndicator()
               ],
             ),

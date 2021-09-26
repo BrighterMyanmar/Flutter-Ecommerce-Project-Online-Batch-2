@@ -1,4 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
+import 'package:commerce/models/Category.dart';
+import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/ProductPage.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,11 +71,12 @@ class _HomeState extends State<Home> {
             SizedBox(height: 10),
             GridView.builder(
                 shrinkWrap: true,
-                itemCount: 20,
+                itemCount: Constants.categories.length,
                 physics: ScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
-                itemBuilder: (context, index) => _buildCategory(index))
+                itemBuilder: (context, index) =>
+                    _buildCategory(Constants.categories[index]))
           ],
         ),
       ),
@@ -89,7 +92,7 @@ class _HomeState extends State<Home> {
           _buildDrawerHeader(),
           _buildListTitleWithIcon(context, Icons.home, "Home Page", "/login"),
           _buildListTitleWithIcon(
-              context, Icons.person, "About Page", "/register"),
+              context, Icons.person, "History Page", "/historypage"),
           _buildListTitleWithIcon(
               context, Icons.location_city, "Contact Us", "/login"),
           _buildListTitleWithIcon(
@@ -135,10 +138,21 @@ class _HomeState extends State<Home> {
         ]));
   }
 
-  Widget _buildCategory(ind) {
+  Widget _buildCategory(Category category) {
     return Container(
         height: 100,
-        child: Card(child: Image.asset("assets/images/${(ind % 5) + 1}.jpg")));
+        child: InkWell(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductPage(cat:category.name))),
+          child: Card(
+              child: Column(
+            children: [
+              SizedBox(height:10),
+              Text(category.name ?? ""),
+              SizedBox(height:10),
+              Image.network("https://picsum.photos/250/200",scale: 1.5)
+            ],
+          )),
+        ));
   }
 
   Container _makeTitleBar(mSize, text) {

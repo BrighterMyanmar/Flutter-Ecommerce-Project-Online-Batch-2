@@ -46,13 +46,18 @@ class _PreviewState extends State<Preview> {
                           fontFamily: "English")),
                 ),
                 SizedBox(height: 20),
-                Center(child: Image.asset("assets/images/${product?.image}", width: 250)),
+                Center(
+                    child: Image.network("https://picsum.photos/300/200",
+                        scale: 1)),
                 SizedBox(height: 20),
-                _buildRichText("Price\n", "\t\t\t\t\t\t\t3500 Ks"),
+                _buildRichText(
+                    "Price\n", "\t\t\t\t\t\t\t ${product?.price ?? 0} Ks"),
                 SizedBox(height: 20),
-                _buildRichText("Size\n", "\t\t\t\t\t\t\tLarge Size"),
+                _buildRichText(
+                    "Size\n", "\t\t\t\t\t\t\t ${product?.size ?? 0}"),
                 SizedBox(height: 20),
-                _buildRichText("Promo\n", "\t\t\t\t\t\t\tCoca Cola"),
+                _buildRichText(
+                    "Promo\n", "\t\t\t\t\t\t\t ${product?.discount ?? 0}"),
                 SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -60,7 +65,7 @@ class _PreviewState extends State<Preview> {
                     RaisedButton(
                         onPressed: () {
                           setState(() {
-                            cartCount++;
+                            Constants.addToCard(product);
                           });
                         },
                         color: Constants.normal,
@@ -84,7 +89,7 @@ class _PreviewState extends State<Preview> {
                         )),
                     RaisedButton(
                         onPressed: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Detail())),
+                            MaterialPageRoute(builder: (context) => Detail(product:product))),
                         color: Constants.normal,
                         shape: RoundedRectangleBorder(
                             borderRadius:

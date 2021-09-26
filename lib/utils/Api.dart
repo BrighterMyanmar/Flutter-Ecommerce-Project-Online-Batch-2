@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:commerce/models/Category.dart';
+import 'package:commerce/models/Product.dart';
 import 'package:commerce/models/User.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:http/http.dart' as http;
@@ -27,5 +29,29 @@ class Api {
       return true;
     }
     return false;
+  }
+
+  static Future<bool> getCategories() async {
+    Uri uri = Uri.parse("${Constants.API_URL}/cats");
+    var response = await http.get(uri);
+    var responseData = jsonDecode(response.body);
+    if (responseData["con"]) {
+      List lisy = responseData["result"] as List;
+      Constants.categories = lisy.map((e) => Category.fromJson(e)).toList();
+      return true;
+    }
+    return false;
+  }
+
+  static Future<List<Product>> paginateProduct({page}) async {
+    List<Product> productList = [];
+    Uri uri = Uri.parse("${Constants.API_URL}/products/$page");
+    var response = await http.get(uri);
+    var responseData = jsonDecode(response.body);
+    if (responseData["con"]) {
+      List lisy = responseData["result"] as List;
+      productList = lisy.map((e) => Product.fromJson(e)).toList();
+    }
+    return productList;
   }
 }
