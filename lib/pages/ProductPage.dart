@@ -1,31 +1,32 @@
 import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Preview.dart';
 import 'package:commerce/utils/Api.dart';
+import 'package:commerce/utils/Components.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
-  String? cat;
+  String? catid;
 
-  ProductPage({Key? key, this.cat}) : super(key: key);
+  ProductPage({Key? key, this.catid}) : super(key: key);
 
   @override
-  _ProductPageState createState() => _ProductPageState(this.cat);
+  _ProductPageState createState() => _ProductPageState(this.catid);
 }
 
 class _ProductPageState extends State<ProductPage> {
-  String? cat;
+  String? catid;
   List<Product> products = [];
   int page = 1;
   bool isLoading = false;
 
-  _ProductPageState(this.cat);
+  _ProductPageState(this.catid);
 
   loadProduct() async {
     setState(() {
       isLoading = true;
     });
-    List<Product> ps = await Api.paginateProduct(page: page);
+    List<Product> ps = await Api.productByCatId(catid: catid, page: page);
     setState(() {
       products.addAll(ps);
       page++;
@@ -55,7 +56,7 @@ class _ProductPageState extends State<ProductPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Products"),
-          actions: [Constants.getShoppingCart()],
+          actions: [Components.getShoppingCart(context)],
         ),
         body: Column(
           children: [
@@ -145,7 +146,7 @@ class _ProductPageState extends State<ProductPage> {
                 InkWell(
                     onTap: () {
                       setState(() {
-                        Constants.addToCard(product);
+                        Components.addToCard(product);
                       });
                     },
                     child: Icon(Icons.shopping_cart,

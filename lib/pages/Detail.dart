@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Cart.dart';
+import 'package:commerce/utils/Components.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class _DetailState extends State<Detail> {
                 InkWell(
                   onTap: () => Navigator.push(
                       context, MaterialPageRoute(builder: (context) => Cart())),
-                  child: Constants.getShoppingCart(),
+                  child: Components.getShoppingCart(context),
                 )
               ],
             ),

@@ -1,7 +1,11 @@
+import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/HistoryPage.dart';
+import 'package:commerce/utils/Api.dart';
+import 'package:commerce/utils/Components.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -19,8 +23,9 @@ class _CartState extends State<Cart> {
           children: [
             Expanded(
                 child: ListView.builder(
-                    itemCount: 20,
-                    itemBuilder: (context, index) => _buildCartItem())),
+                    itemCount: Components.cartProducts.length,
+                    itemBuilder: (context, index) =>
+                        _buildCartItem(Components.cartProducts[index]))),
             Container(
               height: 150,
               padding: EdgeInsets.only(top: 20),
@@ -42,7 +47,7 @@ class _CartState extends State<Cart> {
                               fontWeight: FontWeight.bold,
                               fontFamily: "English")),
                       SizedBox(width: 20),
-                      Text("350,000 Ks",
+                      Text("${Components.getProductTotal()} Ks",
                           style: TextStyle(
                               color: Constants.normal,
                               fontFamily: "English",
@@ -57,15 +62,27 @@ class _CartState extends State<Cart> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         RaisedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (Constants.user == null) {
-                                print("No User");
                                 Navigator.pushNamed(context, "/login");
                               } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HistoryPage()));
+                                bool bol = await Api.orderUpload(
+                                    items: Components.generateOrder());
+                                if (bol) {
+                                  Components.cartProducts = [];
+                                  Fluttertoast.showToast(
+                                      msg: "Order Upload Success",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HistoryPage()));
+                                }
                               }
                             },
                             color: Constants.normal,
@@ -92,7 +109,7 @@ class _CartState extends State<Cart> {
         ));
   }
 
-  Widget _buildCartItem() {
+  Widget _buildCartItem(Product product) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       child: Card(
@@ -108,7 +125,12 @@ class _CartState extends State<Cart> {
                 width: 25,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle, color: Constants.secondary),
-                child: Icon(Icons.clear, color: Colors.white),
+                child: InkWell(
+                    onTap: () {
+                      Components.removeProduct(product);
+                      setState(() {});
+                    },
+                    child: Icon(Icons.clear, color: Colors.white)),
               ),
             ),
             Container(
@@ -118,12 +140,12 @@ class _CartState extends State<Cart> {
                 // decoration: BoxDecoration(color: Constants.primary),
                 child: Row(
                   children: [
-                    Image.asset("assets/images/bur.png"),
+                    Image.network("${product.images?[0]}"),
                     SizedBox(width: 10),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Burger with Beef",
+                        Text("${product.name}",
                             style: TextStyle(
                                 color: Constants.normal,
                                 fontFamily: "English",
@@ -141,8 +163,10 @@ class _CartState extends State<Cart> {
                                         fontSize: 14,
                                         fontStyle: FontStyle.italic),
                                     children: [
-                                  TextSpan(text: "Price 3500\n"),
-                                  TextSpan(text: "Total 10500")
+                                  TextSpan(text: "Price ${product.price}\n"),
+                                  TextSpan(
+                                      text:
+                                          "Total ${(product.price ?? 0) * product.count}")
                                 ])),
                             SizedBox(width: 20),
                             Row(
@@ -153,11 +177,17 @@ class _CartState extends State<Cart> {
                                   decoration: BoxDecoration(
                                       color: Constants.normal,
                                       shape: BoxShape.circle),
-                                  child: Icon(Icons.remove,
-                                      color: Constants.primary),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Components.reduceProductCount(product);
+                                      setState(() {});
+                                    },
+                                    child: Icon(Icons.remove,
+                                        color: Constants.primary),
+                                  ),
                                 ),
                                 SizedBox(width: 5),
-                                Text("03",
+                                Text("${product.count}".padLeft(2, "0"),
                                     style: TextStyle(
                                         fontSize: 20, color: Constants.normal)),
                                 SizedBox(width: 5),
@@ -167,8 +197,13 @@ class _CartState extends State<Cart> {
                                   decoration: BoxDecoration(
                                       color: Constants.normal,
                                       shape: BoxShape.circle),
-                                  child:
-                                      Icon(Icons.add, color: Constants.primary),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        Components.addToCard(product);
+                                        setState(() {});
+                                      },
+                                      child: Icon(Icons.add,
+                                          color: Constants.primary)),
                                 )
                               ],
                             )

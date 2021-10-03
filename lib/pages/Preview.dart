@@ -1,6 +1,7 @@
 import 'package:commerce/helper/ArchPainter.dart';
 import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Detail.dart';
+import 'package:commerce/utils/Components.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _PreviewState extends State<Preview> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Product Preview"),
-          actions: [Constants.getShoppingCart()],
+          actions: [Components.getShoppingCart(context)],
         ),
         body: SingleChildScrollView(
           child: Stack(
@@ -65,7 +66,7 @@ class _PreviewState extends State<Preview> {
                     RaisedButton(
                         onPressed: () {
                           setState(() {
-                            Constants.addToCard(product);
+                            Components.addToCard(product);
                           });
                         },
                         color: Constants.normal,
@@ -88,8 +89,11 @@ class _PreviewState extends State<Preview> {
                           ),
                         )),
                     RaisedButton(
-                        onPressed: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Detail(product:product))),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Detail(product: product))),
                         color: Constants.normal,
                         shape: RoundedRectangleBorder(
                             borderRadius:

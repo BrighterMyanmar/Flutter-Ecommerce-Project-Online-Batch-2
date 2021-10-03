@@ -1,3 +1,6 @@
+import 'package:commerce/models/History.dart';
+import 'package:commerce/models/OrderItem.dart';
+import 'package:commerce/utils/Api.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
@@ -9,29 +12,48 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  List<History> histories = [];
+
+  _loadMyOrders() async {
+    histories = await Api.getMyOrders();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMyOrders();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Your Order Hisoty")),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) => _buildOrder()),
-            )
-          ],
-        ));
+        body: histories.length > 0
+            ? Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: histories.length,
+                        itemBuilder: (context, index) =>
+                            _buildOrder(histories[index])),
+                  )
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Center(child: CircularProgressIndicator())],
+              ));
   }
 
-  Widget _buildOrder() {
+  Widget _buildOrder(History history) {
     return Container(
         color: Constants.normal,
         child: ExpansionTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text("20-12-2020",
+              Text("${history.created?.split("T")[0]}",
                   style: TextStyle(
                       color: Constants.primary,
                       fontFamily: "English",
@@ -42,15 +64,20 @@ class _HistoryPageState extends State<HistoryPage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30))),
                   color: Constants.secondary,
-                  child: Text("15,000",
+                  child: Text("${history.total}",
                       style: TextStyle(color: Constants.primary, fontSize: 16)))
             ],
           ),
-          children: [...List.generate(3, (index) => _buildOrderItem())],
+          children: [
+            ...List.generate(
+                history.items?.length ?? 0,
+                (index) =>
+                    _buildOrderItem(history?.items?[index] ?? new OrderItem()))
+          ],
         ));
   }
 
-  Widget _buildOrderItem() {
+  Widget _buildOrderItem(OrderItem orderItem) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -58,15 +85,15 @@ class _HistoryPageState extends State<HistoryPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset("assets/images/bur.png", width: 80),
+            Image.network("${orderItem.images?[0]}", width: 80),
             Column(children: [
-              Text("Burger Kig",
+              Text("${orderItem?.name}",
                   style: TextStyle(
                       color: Constants.primary,
                       fontFamily: "English",
                       fontWeight: FontWeight.bold,
                       fontSize: 26)),
-              Text("3 * 3500",
+              Text("${orderItem.count} * ${orderItem.price}",
                   style: TextStyle(
                       color: Constants.primary,
                       fontFamily: "English",
@@ -78,7 +105,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30))),
                 color: Constants.normal,
-                child: Text("15,000",
+                child: Text("${(orderItem?.count ?? 0) * (orderItem.price ?? 0)}",
                     style: TextStyle(color: Constants.primary, fontSize: 16)))
           ],
         ),

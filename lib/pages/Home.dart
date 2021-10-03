@@ -142,14 +142,17 @@ class _HomeState extends State<Home> {
     return Container(
         height: 100,
         child: InkWell(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductPage(cat:category.name))),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProductPage(catid: category.id))),
           child: Card(
               child: Column(
             children: [
-              SizedBox(height:10),
+              SizedBox(height: 10),
               Text(category.name ?? ""),
-              SizedBox(height:10),
-              Image.network("https://picsum.photos/250/200",scale: 1.5)
+              SizedBox(height: 10),
+              Image.network("https://picsum.photos/250/200", scale: 1.5)
             ],
           )),
         ));
