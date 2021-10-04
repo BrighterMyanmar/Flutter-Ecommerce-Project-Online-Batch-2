@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:commerce/models/Category.dart';
 import 'package:commerce/models/Product.dart';
+import 'package:commerce/pages/Chat.dart';
 import 'package:commerce/pages/ProductPage.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,19 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.pinkAccent,
         title: Text("Home Page"),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+                onTap: () {
+                  if (Constants.user != null) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Chat()));
+                  } else {
+                    Navigator.pushNamed(context, "/login");
+                  }
+                },
+                child: Icon(Icons.chat, size: 35)),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: InkWell(

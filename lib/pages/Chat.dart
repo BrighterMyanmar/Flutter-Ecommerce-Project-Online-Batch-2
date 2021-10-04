@@ -1,6 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:commerce/models/Message.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);
@@ -10,6 +16,18 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  List<Message> chats = [];
+  final ImagePicker _picker = ImagePicker();
+  File? file;
+
+  _emitMessage(msg, type) {
+    var sendMsg = new Map();
+    sendMsg["from"] = Constants.user?.id;
+    sendMsg["to"] = Constants.SHOP_ID;
+    sendMsg["type"] = type;
+    sendMsg["msg"] = msg;
+  }
+
   @override
   Widget build(BuildContext context) {
     var _sacffoldKey = GlobalKey<ScaffoldState>();
@@ -40,7 +58,10 @@ class _ChatState extends State<Chat> {
             color: Constants.normal,
             child: Row(
               children: [
-                Icon(Icons.file_copy, size: 35, color: Constants.primary),
+                InkWell(
+                    onTap: () => _getImage(),
+                    child: Icon(Icons.file_copy,
+                        size: 35, color: Constants.primary)),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -57,7 +78,13 @@ class _ChatState extends State<Chat> {
                     ),
                   ),
                 ),
-                Icon(Icons.send, size: 35, color: Constants.primary),
+                InkWell(
+                    onTap: () {
+                      _emitMessage(_textInputController.text, "text");
+                      _textInputController.text = "";
+                    },
+                    child:
+                        Icon(Icons.send, size: 35, color: Constants.primary)),
               ],
             ),
           )
@@ -186,5 +213,32 @@ class _ChatState extends State<Chat> {
             )),
       ],
     );
+  }
+
+  _uploadImage() async {
+    var galleryUri = Uri.parse("${Constants.BASE_URL}/gallery");
+    http.MultipartRequest request =
+        new http.MultipartRequest("POST", galleryUri);
+    http.MultipartFile multipartFile =
+        await http.MultipartFile.fromPath("image", file?.path ?? "");
+    request.files.add(multipartFile);
+
+    await request.send().then((response) async {
+      response.stream.transform(utf8.decoder).listen((value) {
+        var resData = jsonDecode((value));
+        _emitMessage(resData["imgLink"], "image");
+      });
+    });
+  }
+
+  Future _getImage() async {
+    final result = await _picker.pickImage(source: ImageSource.gallery);
+    if (result != null) {
+      print("${result.path}");
+      file = File(result.path);
+      _uploadImage();
+    } else {
+      // User canceled the picker
+    }
   }
 }

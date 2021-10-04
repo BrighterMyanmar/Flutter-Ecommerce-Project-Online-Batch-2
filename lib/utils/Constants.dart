@@ -14,6 +14,8 @@ class Constants{
   static const Color transparentYellow = Color.fromRGBO(253, 184, 70, 0.7);
   static const String BASE_URL = "http://13.214.65.164:3000";
   static const String API_URL = "$BASE_URL/api";
+  static const String SHOP_ID = "610fd68647b7a33ec0ea5d10";
+
 
   static Map<String,String> headers = {"content-type":"application/json"};
   static Map<String,String> tokenHeader = {
@@ -21,10 +23,7 @@ class Constants{
     "authorization" : "Bearer ${user?.token}"
   };
 
-
   static List<Category> categories = [];
-
-
 
   static User? user;
 

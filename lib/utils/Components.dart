@@ -2,11 +2,28 @@ import 'package:commerce/models/Product.dart';
 import 'package:commerce/pages/Cart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 import 'Constants.dart';
 
 class Components {
   static List<Product> cartProducts = [];
+  static String SOCKET_ENDPOINT =
+      "${Constants.BASE_URL}/chat?token=${Constants.user?.token}";
+  static IO.Socket? socket;
+
+  static getSocket() {
+    print(SOCKET_ENDPOINT);
+    socket = IO.io(
+        'http://localhost:3000',
+        OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
+            .build());
+    print(socket);
+    socket?.onConnect((_) {
+      print('connect');
+    });
+  }
 
   static Widget getShoppingCart(context) {
     return InkWell(

@@ -72,7 +72,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ...List.generate(
                 history.items?.length ?? 0,
                 (index) =>
-                    _buildOrderItem(history?.items?[index] ?? new OrderItem()))
+                    _buildOrderItem(history.items?[index] ?? new OrderItem()))
           ],
         ));
   }
@@ -87,7 +87,7 @@ class _HistoryPageState extends State<HistoryPage> {
           children: [
             Image.network("${orderItem.images?[0]}", width: 80),
             Column(children: [
-              Text("${orderItem?.name}",
+              Text("${orderItem.name}",
                   style: TextStyle(
                       color: Constants.primary,
                       fontFamily: "English",
@@ -105,7 +105,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30))),
                 color: Constants.normal,
-                child: Text("${(orderItem?.count ?? 0) * (orderItem.price ?? 0)}",
+                child: Text("${(orderItem.count ?? 0) * (orderItem.price ?? 0)}",
                     style: TextStyle(color: Constants.primary, fontSize: 16)))
           ],
         ),

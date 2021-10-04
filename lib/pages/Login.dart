@@ -1,6 +1,7 @@
 import 'package:commerce/helper/TrianglePainter.dart';
 import 'package:commerce/pages/Register.dart';
 import 'package:commerce/utils/Api.dart';
+import 'package:commerce/utils/Components.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/material.dart';
 
@@ -111,6 +112,7 @@ class _LoginState extends State<Login> {
                                 bool bol = await Api.login(
                                     phone: phone, password: pwrod);
                                 if (bol) {
+                                  Components.getSocket();
                                   Navigator.pop(context);
                                 }
                               },
