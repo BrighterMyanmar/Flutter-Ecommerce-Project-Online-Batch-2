@@ -1,9 +1,9 @@
 class Message {
-  String? id, type, msg;
+  String? id, type, msg, created;
   MsgFrom? from;
   MsgTo? to;
 
-  Message({this.id, this.type, this.msg, this.from, this.to});
+  Message({this.id, this.type, this.msg, this.from, this.to, this.created});
 
   factory Message.fromJson(dynamic data) {
     MsgFrom msf = MsgFrom.fromJson(data["from"]);
@@ -12,6 +12,7 @@ class Message {
         id: data["_id"],
         type: data["type"],
         msg: data["msg"],
+        created: data["created"],
         from: msf,
         to: mst);
   }

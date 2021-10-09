@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:commerce/models/Message.dart';
+import 'package:commerce/utils/Components.dart';
 import 'package:commerce/utils/Constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,18 +21,42 @@ class _ChatState extends State<Chat> {
   final ImagePicker _picker = ImagePicker();
   File? file;
 
+  ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 150);
+
   _emitMessage(msg, type) {
     var sendMsg = new Map();
     sendMsg["from"] = Constants.user?.id;
     sendMsg["to"] = Constants.SHOP_ID;
     sendMsg["type"] = type;
     sendMsg["msg"] = msg;
+    print(sendMsg);
+    Components.socket?.emit("message", sendMsg);
+  }
+
+  _invokeSocket() {
+    Components.socket?.on("message", (data) {
+      Message msg = Message.fromJson(data);
+      chats.add(msg);
+      setState(() {
+        _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent + 500,
+            duration: Duration(seconds: 1),
+            curve: Curves.fastOutSlowIn);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _invokeSocket();
   }
 
   @override
   Widget build(BuildContext context) {
     var _sacffoldKey = GlobalKey<ScaffoldState>();
-    var _textInputController = TextEditingController();
+    var _textInputController = TextEditingController(text: "Hello Server");
     var mSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _sacffoldKey,
@@ -41,16 +66,25 @@ class _ChatState extends State<Chat> {
         children: [
           Expanded(
               child: ListView.builder(
-            itemCount: 100,
+            controller: _scrollController,
+            itemCount: chats.length,
             itemBuilder: (context, index) {
-              if (index % 4 == 0) {
-                return _makeLeftTextContainer(mSize);
-              } else if (index % 4 == 1) {
-                return _makeLeftImageContainer(mSize);
-              } else if (index % 4 == 2) {
-                return _makeRightTextContainer(mSize);
+              Message msg = chats[index];
+              if (msg.from?.id == Constants.SHOP_ID) {
+                // Right
+                if (msg.type == "text") {
+                  return _makeRightTextContainer(mSize, msg);
+                } else {
+                  return _makeRightImageContainer(mSize, msg);
+                }
+              } else {
+                // Left
+                if (msg.type == "text") {
+                  return _makeLeftTextContainer(mSize, msg);
+                } else {
+                  return _makeLeftImageContainer(mSize, msg);
+                }
               }
-              return _makeRightImageContainer(mSize);
             },
           )),
           Container(
@@ -69,7 +103,7 @@ class _ChatState extends State<Chat> {
                       controller: _textInputController,
                       decoration: InputDecoration(
                         labelStyle:
-                            TextStyle(color: Constants.primary, fontSize: 16),
+                            TextStyle(color: Colors.white, fontSize: 16),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Constants.primary)),
                         focusedBorder: OutlineInputBorder(
@@ -93,7 +127,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  Widget _makeLeftTextContainer(mSize) {
+  Widget _makeLeftTextContainer(mSize, Message msg) {
     return Row(
       children: [
         Container(
@@ -112,19 +146,19 @@ class _ChatState extends State<Chat> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 10, bottom: 10),
-                child: Text("Username",
+                child: Text("${msg.from?.name}",
                     style: TextStyle(
                         color: Constants.normal,
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
               ),
-              Text(Constants.sarTar, style: TextStyle(color: Constants.normal)),
+              Text("${msg.msg}", style: TextStyle(color: Constants.normal)),
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text("20-0802021",
+                    Text("${msg.created!.split("T")[0]}",
                         style: TextStyle(color: Constants.primary))
                   ],
                 ),
@@ -136,7 +170,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  Widget _makeRightTextContainer(mSize) {
+  Widget _makeRightTextContainer(mSize, Message msg) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -156,19 +190,19 @@ class _ChatState extends State<Chat> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 10, bottom: 10),
-                child: Text("Username",
+                child: Text("${msg.from?.name}",
                     style: TextStyle(
                         color: Constants.primary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
               ),
-              Text(Constants.sarTar, style: TextStyle(color: Constants.normal)),
+              Text("${msg.msg}", style: TextStyle(color: Constants.normal)),
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text("20-0802021",
+                    Text("${msg.created!.split("T")[0]}",
                         style: TextStyle(color: Constants.primary))
                   ],
                 ),
@@ -180,7 +214,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  Widget _makeLeftImageContainer(mSize) {
+  Widget _makeLeftImageContainer(mSize, Message msg) {
     return Row(
       children: [
         Container(
@@ -189,15 +223,15 @@ class _ChatState extends State<Chat> {
             decoration: BoxDecoration(
                 color: Constants.darkGrey,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Image.asset(
-              "assets/images/bur.png",
+            child: Image.network(
+              "${msg.msg}",
               width: 200,
             ))
       ],
     );
   }
 
-  Widget _makeRightImageContainer(mSize) {
+  Widget _makeRightImageContainer(mSize, Message msg) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -207,8 +241,8 @@ class _ChatState extends State<Chat> {
             decoration: BoxDecoration(
                 color: Constants.darkGrey,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Image.asset(
-              "assets/images/bur.png",
+            child: Image.network(
+              "${msg.msg}",
               width: 200,
             )),
       ],

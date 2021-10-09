@@ -14,14 +14,12 @@ class Components {
   static IO.Socket? socket;
 
   static getSocket() {
-    print(SOCKET_ENDPOINT);
     socket = IO.io(
-        'http://localhost:3000',
+        SOCKET_ENDPOINT,
         OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
             .build());
-    print(socket);
     socket?.onConnect((_) {
-      print('connect');
+      print('Socket Connected');
     });
   }
 
