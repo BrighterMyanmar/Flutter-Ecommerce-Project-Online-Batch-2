@@ -30,20 +30,27 @@ class _ChatState extends State<Chat> {
     sendMsg["to"] = Constants.SHOP_ID;
     sendMsg["type"] = type;
     sendMsg["msg"] = msg;
-    print(sendMsg);
     Components.socket?.emit("message", sendMsg);
   }
 
   _invokeSocket() {
+    Components.socket?.emit("load-more", "");
     Components.socket?.on("message", (data) {
       Message msg = Message.fromJson(data);
       chats.add(msg);
       setState(() {
         _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent + 500,
+            _scrollController.position.maxScrollExtent + 200,
             duration: Duration(seconds: 1),
             curve: Curves.fastOutSlowIn);
       });
+    });
+    Components.socket?.on("messages", (data) {
+      print(data);
+      List lisy = data as List;
+      chats = lisy.map((e) => Message.fromJson(e)).toList();
+      print(chats.length);
+      setState(() {});
     });
   }
 
@@ -66,6 +73,7 @@ class _ChatState extends State<Chat> {
         children: [
           Expanded(
               child: ListView.builder(
+            // reverse: true,
             controller: _scrollController,
             itemCount: chats.length,
             itemBuilder: (context, index) {
@@ -250,17 +258,18 @@ class _ChatState extends State<Chat> {
   }
 
   _uploadImage() async {
-    var galleryUri = Uri.parse("${Constants.BASE_URL}/gallery");
+    var galleryUri = Uri.parse("${Constants.API_URL}/imageupload");
     http.MultipartRequest request =
         new http.MultipartRequest("POST", galleryUri);
     http.MultipartFile multipartFile =
         await http.MultipartFile.fromPath("image", file?.path ?? "");
     request.files.add(multipartFile);
+    request.headers["Authorization"] = "Bearer ${Constants.user?.token}";
 
     await request.send().then((response) async {
       response.stream.transform(utf8.decoder).listen((value) {
         var resData = jsonDecode((value));
-        _emitMessage(resData["imgLink"], "image");
+        _emitMessage(resData["msg"], "image");
       });
     });
   }

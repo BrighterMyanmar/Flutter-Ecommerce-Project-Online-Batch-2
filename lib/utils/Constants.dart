@@ -12,7 +12,7 @@ class Constants{
   static const Color yellow = Color(0xffFDC054);
   static const Color darkGrey = Color(0xff202020);
   static const Color transparentYellow = Color.fromRGBO(253, 184, 70, 0.7);
-  static const String BASE_URL = "http://13.214.65.164:3000";
+  static const String BASE_URL = "http://13.214.58.126:3000";
   static const String API_URL = "$BASE_URL/api";
   static const String SHOP_ID = "610fd68647b7a33ec0ea5d10";
 
