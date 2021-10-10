@@ -21,8 +21,7 @@ class _ChatState extends State<Chat> {
   final ImagePicker _picker = ImagePicker();
   File? file;
 
-  ScrollController _scrollController =
-      ScrollController(initialScrollOffset: 150);
+  ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
 
   _emitMessage(msg, type) {
     var sendMsg = new Map();
@@ -40,7 +39,7 @@ class _ChatState extends State<Chat> {
       chats.add(msg);
       setState(() {
         _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent + 200,
+            _scrollController.position.maxScrollExtent + 400,
             duration: Duration(seconds: 1),
             curve: Curves.fastOutSlowIn);
       });
@@ -74,6 +73,7 @@ class _ChatState extends State<Chat> {
           Expanded(
               child: ListView.builder(
             // reverse: true,
+            shrinkWrap: true,
             controller: _scrollController,
             itemCount: chats.length,
             itemBuilder: (context, index) {
